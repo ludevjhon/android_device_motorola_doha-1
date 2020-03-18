@@ -100,7 +100,7 @@ PRODUCT_CHARACTERISTICS := nosdcard
 
 # Camera
 PRODUCT_PACKAGES += \
-    SnapdragonCamera2
+    Snap
 
 # QMI
 PRODUCT_PACKAGES += \
