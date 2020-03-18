@@ -6,7 +6,7 @@ Device configuration for Motorola G8 Plus (doha)
 Basic   | Spec Sheet
 -------:|:-------------------------
 CPU     | Octa-core
-CHIPSET | Qualcomm SDM630 Snapdragon 665
+CHIPSET | Qualcomm sm6150 Snapdragon 665
 GPU     | Adreno 530
 Memory  | 4GB
 Shipped Android Version | 9.0 (Oreo)
