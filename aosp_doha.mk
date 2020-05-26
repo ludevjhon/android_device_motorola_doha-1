@@ -21,17 +21,12 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_p.mk)
 
-VENDOR_EXCEPTION_PATHS := omni \
-    motorola \
-    gapps \
-    microg
-
 # Sample: This is where we'd set a backup provider if we had one
 # $(call inherit-product, device/sample/products/backup_overlay.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
 # Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 
@@ -42,45 +37,35 @@ AB_OTA_UPDATER := true
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/aosp/config/common.mk)
 
-# get the rest of aosp stuff after ours
-# $(call inherit-product, $(SRC_TARGET_DIR)/product/mainline_system_arm64.mk)
-
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, device/motorola/doha/device.mk)
 
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := aosp_doha
 PRODUCT_DEVICE := doha
-PRODUCT_BRAND := motorola
-PRODUCT_MANUFACTURER := motorola
-PRODUCT_MODEL := moto g8 plus
+PRODUCT_BRAND := Motorola
+PRODUCT_MODEL := Moto g(8) plus
+PRODUCT_MANUFACTURER := Motorola
 
-TARGET_DEVICE := Moto G8 Plus
-PRODUCT_SYSTEM_NAME := Moto G8 Plus
+PRODUCT_BUILD_PROP_OVERRIDES += \
+    PRODUCT_NAME=doha \
 
-VENDOR_RELEASE := 9/PPIS29.65-24-2/dc7f7b:user/release-keys
-BUILD_FINGERPRINT := motorola/doha_retail/doha:$(VENDOR_RELEASE)
-OMNI_BUILD_FINGERPRINT := motorola/doha_retail/doha:$(VENDOR_RELEASE)
-OMNI_PRIVATE_BUILD_DESC := "'doha_retail-user 10 PPIS29.65-24-2 dc7f7b release-keys'"
+BUILD_FINGERPRINT := motorola/doha/doha:9/PPI29.65-51/d187b:user/release-keys
 
-#PLATFORM_SECURITY_PATCH_OVERRIDE := 2019-11-01
+# Vendor Security Patch Level
+VENDOR_SECURITY_PATCH := 2018-08-05
 
 TARGET_VENDOR := motorola
 
 $(call inherit-product, vendor/motorola/doha/doha-vendor.mk)
 
 ifeq ($(WITH_GAPPS),true)
-# https://gitlab.com/darkobas/android_vendor_gapps
 $(call inherit-product, vendor/gapps/config.mk)
-endif
-
-ifeq ($(WITH_MICROG),true)
-# https://github.com/boulzordev/android_prebuilts_prebuiltapks
+else ifeq ($(WITH_MICROG),true)
 $(call inherit-product, vendor/microg/microg.mk)
 endif
 
+ifeq ($(WITH_GAPPS),true)
 #Architecture Gapps
 TARGET_GAPPS_ARCH := arm64
-
-#Bootanimation
-TARGET_BOOT_ANIMATION_RES := 1080
+endif
