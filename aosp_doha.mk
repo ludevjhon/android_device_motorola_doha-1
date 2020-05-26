@@ -30,9 +30,6 @@ VENDOR_EXCEPTION_PATHS := omni \
 # $(call inherit-product, device/sample/products/backup_overlay.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
-# Get the prebuilt list of APNs
-#$(call inherit-product, vendor/aosp/config/gsm.mk)
-
 # Inherit from the common Open Source product configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
@@ -41,9 +38,6 @@ BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 # must be before including omni part
 TARGET_BOOTANIMATION_SIZE := 1080p
 AB_OTA_UPDATER := true
-
-DEVICE_PACKAGE_OVERLAYS += device/motorola/doha/overlay/device
-DEVICE_PACKAGE_OVERLAYS += vendor/aosp/overlay/CarrierConfig
 
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/aosp/config/common.mk)

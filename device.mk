@@ -22,6 +22,10 @@
 PRODUCT_PACKAGES += com.android.apex.cts.shim.v1_prebuilt
 TARGET_FLATTEN_APEX := false
 
+# Overlays
+DEVICE_PACKAGE_OVERLAYS += \
+    $(LOCAL_PATH)/overlay \
+
 # Prebuilt
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,device/motorola/doha/prebuilt/root,recovery/root) \
@@ -100,7 +104,7 @@ PRODUCT_CHARACTERISTICS := nosdcard
 
 # Camera
 PRODUCT_PACKAGES += \
-    SnapdragonCamera2
+    Snap
 
 # QMI
 PRODUCT_PACKAGES += \
