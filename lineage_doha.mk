@@ -21,7 +21,7 @@
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_p.mk)
 
-VENDOR_EXCEPTION_PATHS := omni \
+VENDOR_EXCEPTION_PATHS := lineage \
     motorola \
     gapps \
     microg
@@ -31,7 +31,7 @@ VENDOR_EXCEPTION_PATHS := omni \
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
 # Inherit from the common Open Source product configuration
-$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/lineage_base_telephony.mk)
 
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 
@@ -40,7 +40,7 @@ TARGET_BOOTANIMATION_SIZE := 1080p
 AB_OTA_UPDATER := true
 
 # Inherit from our custom product configuration
-$(call inherit-product, vendor/aosp/config/common.mk)
+$(call inherit-product, vendor/lineage/config/common.mk)
 
 # get the rest of aosp stuff after ours
 # $(call inherit-product, $(SRC_TARGET_DIR)/product/mainline_system_arm64.mk)
@@ -80,7 +80,14 @@ $(call inherit-product, vendor/microg/microg.mk)
 endif
 
 #Architecture Gapps
-TARGET_GAPPS_ARCH := arm64
+#TARGET_GAPPS_ARCH := arm64
 
 #Bootanimation
 TARGET_BOOT_ANIMATION_RES := 1080
+
+
+#SAKURA_OFFICIAL := true
+
+#gapps
+#SAKURA_GAPPS := true
+#TARGET_GAPPS_ARCH := arm64
