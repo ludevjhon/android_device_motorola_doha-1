@@ -1,4 +1,4 @@
-# Copyright (C) 2010 The Android Open Source Project
+# Copyright (C) 2020 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,14 +39,19 @@ BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 TARGET_BOOTANIMATION_SIZE := 1080p
 AB_OTA_UPDATER := true
 
-# Inherit from our custom product configuration
-$(call inherit-product, vendor/lineage/config/common.mk)
-
 # get the rest of aosp stuff after ours
 # $(call inherit-product, $(SRC_TARGET_DIR)/product/mainline_system_arm64.mk)
 
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, device/motorola/doha/device.mk)
+
+# Inherit some common Sakura OS stuff.
+IS_PHONE := true
+#SAKURA_OFFICIAL := true
+TARGET_BOOT_ANIMATION_RES := 1080
+#SAKURA_GAPPS := true
+#TARGET_GAPPS_ARCH := arm64
+$(call inherit-product, vendor/lineage/config/common.mk)
 
 # Discard inherited values and use our own instead.
 PRODUCT_NAME := aosp_doha
@@ -78,16 +83,3 @@ ifeq ($(WITH_MICROG),true)
 # https://github.com/boulzordev/android_prebuilts_prebuiltapks
 $(call inherit-product, vendor/microg/microg.mk)
 endif
-
-#Architecture Gapps
-#TARGET_GAPPS_ARCH := arm64
-
-#Bootanimation
-TARGET_BOOT_ANIMATION_RES := 1080
-
-
-#SAKURA_OFFICIAL := true
-
-#gapps
-#SAKURA_GAPPS := true
-#TARGET_GAPPS_ARCH := arm64
