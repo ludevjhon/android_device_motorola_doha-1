@@ -3,6 +3,10 @@ PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/aosp_doha.mk
 
 COMMON_LUNCH_CHOICES := \
-    aosp_doha-user \
-    aosp_doha-userdebug \
-    aosp_doha-eng \
+    lineage_doha-user \
+    lineage_doha-userdebug \
+    lineage_doha-eng \
+
+device: device/motorola/doha
+vendor: vendor/motorola/doha
+kernel: kernel/motorola/trinket
