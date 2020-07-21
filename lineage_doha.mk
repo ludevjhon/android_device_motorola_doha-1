@@ -23,24 +23,15 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/product_launched_with_p.mk)
 
 VENDOR_EXCEPTION_PATHS := lineage \
     motorola \
-    gapps \
-    microg
+    gapps
 
-# Sample: This is where we'd set a backup provider if we had one
-# $(call inherit-product, device/sample/products/backup_overlay.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
-
-# Inherit from the common Open Source product configuration
-#$(call inherit-product, $(SRC_TARGET_DIR)/product/lineage_base_telephony.mk)
 
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 
 # must be before including omni part
 TARGET_BOOTANIMATION_SIZE := 1080p
 AB_OTA_UPDATER := true
-
-# get the rest of aosp stuff after ours
-# $(call inherit-product, $(SRC_TARGET_DIR)/product/mainline_system_arm64.mk)
 
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, device/motorola/doha/device.mk)
@@ -49,12 +40,12 @@ $(call inherit-product, device/motorola/doha/device.mk)
 IS_PHONE := true
 #SAKURA_OFFICIAL := true
 TARGET_BOOT_ANIMATION_RES := 1080
-#SAKURA_GAPPS := true
-#TARGET_GAPPS_ARCH := arm64
+SAKURA_GAPPS := true
+TARGET_GAPPS_ARCH := arm64
 $(call inherit-product, vendor/lineage/config/common.mk)
 
 # Discard inherited values and use our own instead.
-PRODUCT_NAME := aosp_doha
+PRODUCT_NAME := lineage_doha
 PRODUCT_DEVICE := doha
 PRODUCT_BRAND := motorola
 PRODUCT_MANUFACTURER := motorola
@@ -77,9 +68,4 @@ $(call inherit-product, vendor/motorola/doha/doha-vendor.mk)
 ifeq ($(WITH_GAPPS),true)
 # https://gitlab.com/darkobas/android_vendor_gapps
 $(call inherit-product, vendor/gapps/config.mk)
-endif
-
-ifeq ($(WITH_MICROG),true)
-# https://github.com/boulzordev/android_prebuilts_prebuiltapks
-$(call inherit-product, vendor/microg/microg.mk)
 endif
