@@ -16,7 +16,6 @@
 
 package com.moto.actions;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import androidx.preference.PreferenceFragment;
 import android.provider.Settings;
@@ -31,7 +30,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 public class DozeSettingsFragment extends PreferenceFragment {
-
+    
     private SwitchPreference mHandwavePreference;
     private SwitchPreference mPickupPreference;
 
@@ -40,15 +39,7 @@ public class DozeSettingsFragment extends PreferenceFragment {
 
     private String KEY_GESTURE_HAND_WAVE = "gesture_hand_wave";
     private String KEY_GESTURE_PICK_UP = "gesture_pick_up";
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ActionBar actionbar = getActivity().getActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setTitle(R.string.ambient_display_title);
-    }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -97,7 +88,7 @@ public class DozeSettingsFragment extends PreferenceFragment {
             }
         }
     };
-
+    
     private void updatePrefs(boolean enabled){
         mHandwavePreference.setEnabled(enabled);
         mPickupPreference.setEnabled(enabled);

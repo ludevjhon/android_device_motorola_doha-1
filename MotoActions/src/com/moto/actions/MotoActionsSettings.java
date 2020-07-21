@@ -30,7 +30,7 @@ import com.moto.actions.actions.UpdatedStateNotifier;
 import com.moto.actions.actions.CameraActivationAction;
 import com.moto.actions.actions.TorchAction;
 
-public class MotoActionsSettings {
+public class MotoActionsSettings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "MotoActions";
 
     private static final String GESTURE_CAMERA_ACTION_KEY = "gesture_camera_action";
@@ -55,7 +55,7 @@ public class MotoActionsSettings {
     public MotoActionsSettings(Context context, UpdatedStateNotifier updatedStateNotifier) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         loadPreferences(sharedPrefs);
-        sharedPrefs.registerOnSharedPreferenceChangeListener(mPrefListener);
+        sharedPrefs.registerOnSharedPreferenceChangeListener(this);
         mContext = context;
         mUpdatedStateNotifier = updatedStateNotifier;
     }
@@ -107,15 +107,13 @@ public class MotoActionsSettings {
     private void loadPreferences(SharedPreferences sharedPreferences) {
         mCameraGestureEnabled = sharedPreferences.getBoolean(GESTURE_CAMERA_ACTION_KEY, true);
         mChopChopEnabled = sharedPreferences.getBoolean(GESTURE_CHOP_CHOP_KEY, true);
-        mIrWakeUpEnabled = sharedPreferences.getBoolean(GESTURE_IR_WAKEUP_KEY, true);
+        mIrWakeUpEnabled = sharedPreferences.getBoolean(GESTURE_IR_WAKEUP_KEY, false);
         mPickUpGestureEnabled = sharedPreferences.getBoolean(GESTURE_PICK_UP_KEY, true);
         mIrSilencerEnabled = sharedPreferences.getBoolean(GESTURE_IR_SILENCER_KEY, false);
         mFlipToMuteEnabled = sharedPreferences.getBoolean(GESTURE_FLIP_TO_MUTE_KEY, false);
         mLiftToSilenceEnabled = sharedPreferences.getBoolean(GESTURE_LIFT_TO_SILENCE_KEY, false);
     }
 
-    private SharedPreferences.OnSharedPreferenceChangeListener mPrefListener =
-            new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             boolean updated = true;
@@ -125,7 +123,7 @@ public class MotoActionsSettings {
             } else if (GESTURE_CHOP_CHOP_KEY.equals(key)) {
                 mChopChopEnabled = sharedPreferences.getBoolean(GESTURE_CHOP_CHOP_KEY, true);
             } else if (GESTURE_IR_WAKEUP_KEY.equals(key)) {
-                mIrWakeUpEnabled = sharedPreferences.getBoolean(GESTURE_IR_WAKEUP_KEY, true);
+                mIrWakeUpEnabled = sharedPreferences.getBoolean(GESTURE_IR_WAKEUP_KEY, false);
             } else if (GESTURE_PICK_UP_KEY.equals(key)) {
                 mPickUpGestureEnabled = sharedPreferences.getBoolean(GESTURE_PICK_UP_KEY, true);
             } else if (GESTURE_IR_SILENCER_KEY.equals(key)) {
@@ -134,9 +132,8 @@ public class MotoActionsSettings {
                 mFlipToMuteEnabled = sharedPreferences.getBoolean(GESTURE_FLIP_TO_MUTE_KEY, false);
             } else if (GESTURE_LIFT_TO_SILENCE_KEY.equals(key)) {
                 mLiftToSilenceEnabled = sharedPreferences.getBoolean(GESTURE_LIFT_TO_SILENCE_KEY, false);
-            } else if (Constants.FP_HOME_KEY.equals(key) || Constants.FP_HAPTIC_KEY.equals(key) || Constants.FP_HOME_KEY_OFF.equals(key) || Constants.FP_HAPTIC_SCREENOFF_KEY.equals(key) ||Constants.FP_PROXIMITY_CHECK_SCREENOFF_KEY.equals(key) || Constants.FP_KEYS.equals(key) || Constants.FP_KEY_DBLTAP.equals(key) || Constants.FP_KEY_HOLD.equals(key) ||  Constants.FP_KEY_LEFT.equals(key) || Constants.FP_KEY_RIGHT.equals(key)
-                || Constants.FP_KEYS_OFF.equals(key) || Constants.FP_KEY_DBLTAP_OFF.equals(key) || Constants.FP_KEY_HOLD_OFF.equals(key) ||  Constants.FP_KEY_LEFT_OFF.equals(key) || Constants.FP_KEY_RIGHT_OFF.equals(key)
-                || Constants.GESTURE_SWIPE_RIGHT.equals(key) || Constants.GESTURE_SWIPE_LEFT.equals(key) || Constants.GESTURE_SWIPE_DOWN.equals(key) || Constants.GESTURE_SWIPE_UP.equals(key)) {
+            } else if (Constants.FP_HOME_KEY.equals(key) || Constants.FP_HAPTIC_KEY.equals(key) || Constants.FP_HOME_KEY_OFF.equals(key) || Constants.FP_HAPTIC_SCREENOFF_KEY.equals(key) || Constants.FP_KEYS.equals(key) || Constants.FP_KEY_DBLTAP.equals(key) || Constants.FP_KEY_HOLD.equals(key) ||  Constants.FP_KEY_LEFT.equals(key) || Constants.FP_KEY_RIGHT.equals(key)
+                || Constants.FP_KEYS_OFF.equals(key) || Constants.FP_KEY_DBLTAP_OFF.equals(key) || Constants.FP_KEY_HOLD_OFF.equals(key) ||  Constants.FP_KEY_LEFT_OFF.equals(key) || Constants.FP_KEY_RIGHT_OFF.equals(key)) {
                 Constants.writePreference(mContext, key);
                 updated = false;
             } else {
@@ -147,5 +144,4 @@ public class MotoActionsSettings {
                 mUpdatedStateNotifier.updateState();
             }
         }
-    };
 }

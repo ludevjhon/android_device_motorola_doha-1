@@ -29,11 +29,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -60,9 +56,8 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
-import android.widget.Toast;
 
-import com.android.internal.util.omni.DeviceKeyHandler;
+import com.android.internal.os.DeviceKeyHandler;
 import com.android.internal.util.ArrayUtils;
 
 import com.moto.actions.util.FileUtils;
@@ -89,33 +84,18 @@ public class KeyHandler implements DeviceKeyHandler {
             .build();
     private final Context mContext;
     private final PowerManager mPowerManager;
-    WakeLock mProximityWakeLock;
     WakeLock mGestureWakeLock;
     private KeyguardManager mKeyguardManager;
-    private ScreenOffGesturesHandler mScreenOffGesturesHandler;
     private FPScreenOffGesturesHandler mFPScreenOffGesturesHandler;
-    private SensorManager mSensorManager;
     private CameraManager mCameraManager;
     private String mRearCameraId;
     private boolean mTorchEnabled;
     private Vibrator mVibrator;
-    private int mProximityTimeOut;
-    private boolean mProximityWakeSupported;
     private ISearchManager mSearchManagerService;
     private Handler mHandler;
-    private Handler mSettingsHandler = new Handler();
     private int fpTapCounts = 0;
     private boolean fpTapPending = false;
-    private boolean screenOffGesturePending = false;
     private boolean fpGesturePending = false;
-    private SettingsObserver mSettingsObserver;
-    private static final String DT2W_CONTROL_PATH = "/sys/class/sensors/dt-gesture/enable";
-    private static final String DT2W_WAKEUP_PATH = "/sys/class/sensors/dt-gesture/enable";
-    private boolean mUseProxiCheck;
-    private boolean mDoubleTapToWake;
-    private boolean mAODEnabled;
-    private boolean mProxyIsNear;
-
     private Runnable doubleTapRunnable = new Runnable() {
         public void run() {
             int action = 0;
@@ -136,96 +116,20 @@ public class KeyHandler implements DeviceKeyHandler {
             resetDoubleTapOnFP();
         }
     };
-    private Runnable screenOffGestureRunnable = new Runnable() {
-        public void run() {
-            resetScreenOffGestureDelay();
-        }
-    };
     private Runnable fpGestureRunnable = new Runnable() {
         public void run() {
             resetFPGestureDelay();
         }
     };
 
-    private SensorEventListener mProximitySensor = new SensorEventListener() {
-        @Override
-        public void onSensorChanged(SensorEvent event) {
-            if (mAODEnabled) {
-                mProxyIsNear = event.values[0] < event.sensor.getMaximumRange();
-            } else {
-                mProxyIsNear = event.values[0] == 1;
-            }
-        }
-
-        @Override
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
-
-    private class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-        void observe() {
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.OMNI_DEVICE_PROXI_CHECK_ENABLED),
-                    false, this);
-            mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.DOUBLE_TAP_TO_WAKE),
-                    false, this);
-            mContext.getContentResolver().registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.DOZE_ALWAYS_ON),
-                    false, this);
-            update();
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            update();
-        }
-
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            update();
-        }
-
-        public void update() {
-            mUseProxiCheck = Settings.System.getIntForUser(
-                    mContext.getContentResolver(), Settings.System.OMNI_DEVICE_PROXI_CHECK_ENABLED, 1,
-                    UserHandle.USER_CURRENT) == 1;
-            mDoubleTapToWake = Settings.Secure.getIntForUser(
-                    mContext.getContentResolver(), Settings.Secure.DOUBLE_TAP_TO_WAKE, 0,
-                    UserHandle.USER_CURRENT) == 1;
-            mAODEnabled = Settings.Secure.getIntForUser(
-                    mContext.getContentResolver(), Settings.Secure.DOZE_ALWAYS_ON, 1,
-                    UserHandle.USER_CURRENT) == 1;
-            updateDoubleTapToWake();
-        }
-    }
-
-    private void updateDoubleTapToWake() {
-        Log.i(TAG, "udateDoubleTapToWake " + mDoubleTapToWake);
-        if (FileUtils.isFileReadable(DT2W_CONTROL_PATH)) {
-            FileUtils.writeLine(DT2W_CONTROL_PATH, mDoubleTapToWake ? "1" : "0");
-            FileUtils.writeLine(DT2W_WAKEUP_PATH, mDoubleTapToWake ? "1" : "0");
-        }
-    }
-
     public KeyHandler(Context context) {
         mContext = context;
 
-        mSettingsObserver = new SettingsObserver(mSettingsHandler);
-        mSettingsObserver.observe();
-
         mPowerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        mScreenOffGesturesHandler = new ScreenOffGesturesHandler();
         mFPScreenOffGesturesHandler = new FPScreenOffGesturesHandler();
 
         mGestureWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "GestureWakeLock");
-
-        final Resources resources = mContext.getResources();
 
         mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (mVibrator == null || !mVibrator.hasVibrator()) {
@@ -513,7 +417,7 @@ public class KeyHandler implements DeviceKeyHandler {
         return node;
     }
 
-    public boolean handleKeyEvent(KeyEvent event) {
+    public KeyEvent handleKeyEvent(KeyEvent event) {
         int scanCode = event.getScanCode();
 
         if (DEBUG) {
@@ -526,9 +430,8 @@ public class KeyHandler implements DeviceKeyHandler {
         }
 
         boolean isFPScanCode = ArrayUtils.contains(sSupportedFPGestures, scanCode);
-        boolean isScreenOffGesturesScanCode = ArrayUtils.contains(sSupportedScreenOffGestures, scanCode);
-        if (!isFPScanCode && !isScreenOffGesturesScanCode) {
-            return false;
+        if (!isFPScanCode) {
+            return event;
         }
 
         boolean isFPGestureEnabled = FileUtils.readOneLine(FP_HOME_NODE).equals("1");
@@ -538,12 +441,12 @@ public class KeyHandler implements DeviceKeyHandler {
 
         // We only want ACTION_UP event
         if (event.getAction() != KeyEvent.ACTION_UP) {
-            return true;
+            return null;
         }
 
         if (isFPScanCode){
             if (fpGesturePending) {
-                return false;
+                return event;
             } else {
                 resetFPGestureDelay();
                 fpGesturePending = true;
@@ -558,59 +461,46 @@ public class KeyHandler implements DeviceKeyHandler {
         if (isFPScanCode) {
             if ((!isFPGestureEnabled) || (!isScreenOn && !isFPGestureEnabledOnScreenOff)) {
                 resetDoubleTapOnFP();
-                return false;
+                return event;
             }
             if (!isScreenOn && isFPGestureEnabledOnScreenOff) {
                 processFPScreenOffScancode(scanCode);
             } else {
                 processFPScancode(scanCode);
             }
-        } else if (isScreenOffGesturesScanCode) {
-            handleScreenOffScancode(scanCode);
         }
-        return true;
-    }
 
-    public boolean canHandleKeyEvent(KeyEvent event) {
-        int scanCode = event.getScanCode();
+         return null;
+            }
 
+/**	    public boolean canHandleKeyEvent(KeyEvent event) {
+		int scanCode = event.getScanCode();
         if (DEBUG) {
             Log.d(TAG, "DEBUG: action=" + event.getAction()
-                    + ", flags=" + event.getFlags()
-                    + ", keyCode=" + event.getKeyCode()
-                    + ", scanCode=" + event.getScanCode()
-                    + ", metaState=" + event.getMetaState()
-                    + ", repeatCount=" + event.getRepeatCount());
+                        + ", flags=" + event.getFlags()
+                            + ", keyCode=" + event.getKeyCode()
+                + ", scanCode=" + event.getScanCode()
+                + ", metaState=" + event.getMetaState()
+                + ", repeatCount=" + event.getRepeatCount());
         }
-
         boolean isFPScanCode = ArrayUtils.contains(sSupportedFPGestures, scanCode);
-        boolean isScreenOffGesturesScanCode = ArrayUtils.contains(sSupportedScreenOffGestures, scanCode);
-        if (!isFPScanCode && !isScreenOffGesturesScanCode) {
+                if (!isFPScanCode) {
             return false;
         }
-
         return true;
-    }
-
-    public boolean isCameraLaunchEvent(KeyEvent event) {
-        return false;
-    }
-
-    public boolean isWakeEvent(KeyEvent event){
-        return false;
-    }
-
-    public boolean isDisabledKeyEvent(KeyEvent event) {
-        if (mProxyIsNear) {
-            if (DEBUG) Log.i(TAG, "isDisabledKeyEvent: blocked by proxi sensor - scanCode=" + event.getScanCode());
-            return true;
         }
+        public boolean isCameraLaunchEvent(KeyEvent event) {
+            return false;
+        }
+        public boolean isWakeEvent(KeyEvent event){
         return false;
-    }
-
-    public Intent isActivityLaunchEvent(KeyEvent event) {
-        return null;
-    }
+        }
+        public boolean isDisabledKeyEvent(KeyEvent event) {
+        return false;
+        }
+        public Intent isActivityLaunchEvent(KeyEvent event) {
+                return null;
+    }**/
 
     private void processFPScancode(int scanCode) {
         int action = 0;
@@ -700,11 +590,6 @@ public class KeyHandler implements DeviceKeyHandler {
             case ACTION_SCREENSHOT:
                 triggerVirtualKeypress(mHandler, KeyEvent.KEYCODE_SYSRQ);
                 break;
-            case ACTION_PIP:
-                if (!mKeyguardManager.inKeyguardRestrictedInputMode()) {
-                    goToPipMode();
-                }
-                break;
             case ACTION_LAST_APP:
                 if (!mKeyguardManager.inKeyguardRestrictedInputMode()) {
                     switchToLastApp(mContext);
@@ -718,26 +603,6 @@ public class KeyHandler implements DeviceKeyHandler {
             return;
         }
         mVibrator.vibrate(intensity);
-    }
-
-    private void goToPipMode() {
-        ActivityInfo ai = getRunningActivityInfo(mContext);
-        if (ai != null && !ai.supportsPictureInPicture()) {
-            try {
-                PackageManager pm = mContext.getPackageManager();
-                Resources resources = pm.getResourcesForApplication("com.moto.actions");
-                int resId = resources.getIdentifier("app_does_not_support_pip", "string", "com.moto.actions");
-                final String text = resources.getString(resId);
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        Toast.makeText(mContext, text, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } catch (Exception e) {
-            }
-            return;
-        }
-        triggerVirtualKeypress(mHandler, 171);
     }
 
     private void toggleScreenState() {
@@ -797,49 +662,16 @@ public class KeyHandler implements DeviceKeyHandler {
     }
 
     private void processFPScreenOffScancode(int scanCode) {
-            processFPScancode(scanCode);
-    }
-
-    private void resetScreenOffGestureDelay() {
-        screenOffGesturePending = false;
-        mHandler.removeCallbacks(screenOffGestureRunnable);
-    }
+        if (!mFPScreenOffGesturesHandler.hasMessages(FP_ACTION_REQUEST)) {
+            Message msg = mFPScreenOffGesturesHandler.obtainMessage(FP_ACTION_REQUEST);
+            msg.arg1 = scanCode;
+                mFPScreenOffGesturesHandler.sendMessage(msg);
+            }
+        }
 
     private void resetFPGestureDelay() {
         fpGesturePending = false;
         mHandler.removeCallbacks(fpGestureRunnable);
-    }
-
-    private void handleScreenOffScancode(int scanCode) {
-            processScreenOffScancode(scanCode);
-    }
-
-    private void processScreenOffScancode(int scanCode) {
-        int action = 0;
-        switch (scanCode) {
-            case GESTURE_SWIPE_RIGHT_SCANCODE:
-                action = str2int(FileUtils.readOneLine(GESTURE_SWIPE_RIGHT_NODE));
-                break;
-            case GESTURE_SWIPE_LEFT_SCANCODE:
-                action = str2int(FileUtils.readOneLine(GESTURE_SWIPE_LEFT_NODE));
-                break;
-            case GESTURE_SWIPE_DOWN_SCANCODE:
-                action = str2int(FileUtils.readOneLine(GESTURE_SWIPE_DOWN_NODE));
-                break;
-            case GESTURE_SWIPE_UP_SCANCODE:
-                action = str2int(FileUtils.readOneLine(GESTURE_SWIPE_UP_NODE));
-                break;
-            case GESTURE_DOUBLE_TAP_SCANCODE:
-                action = str2int(FileUtils.readOneLine(GESTURE_DOUBLE_TAP_NODE));
-                if (action != 0) {
-                    action = ACTION_POWER;
-                }
-                break;
-        }
-        boolean isActionSupported = ArrayUtils.contains(sScreenOffSupportedActions, action);
-        if (isActionSupported) {
-            fireScreenOffAction(action);
-        }
     }
 
     private void fireScreenOffAction(int action) {
@@ -926,14 +758,6 @@ public class KeyHandler implements DeviceKeyHandler {
                     mVibrator.vibrate(owningUid, owningPackage, effect, null, VIBRATION_ATTRIBUTES);
                 }
             });
-        }
-    }
-
-    private class ScreenOffGesturesHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            int scanCode = msg.arg1;
-            processScreenOffScancode(scanCode);
         }
     }
 

@@ -48,14 +48,6 @@ public class FPGestureSettingsFragment extends PreferenceFragment {
     private Switch mFPGestureSwitch;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ActionBar actionbar = getActivity().getActionBar();
-        actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setTitle(R.string.fingerprint_gestures_title);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = LayoutInflater.from(getContext()).inflate(R.layout.fp_gesture, container, false);
@@ -83,11 +75,11 @@ public class FPGestureSettingsFragment extends PreferenceFragment {
         mSwitchBarText.setText(isFPGestureEnabled() ? R.string.switch_bar_on :
                 R.string.switch_bar_off);
     }
-
+    
     private void updatePrefs(boolean enabled){
         Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(getActivity()).edit();
         prefEditor.putBoolean(FP_HOME_KEY, enabled);
-        prefEditor.apply();
+        prefEditor.apply(); 
         mFPScreenOnCategory.setEnabled(enabled);
         mFPScreenOffGesture.setEnabled(enabled);
         mFPScreenOffCategory.setEnabled(enabled);
@@ -97,7 +89,7 @@ public class FPGestureSettingsFragment extends PreferenceFragment {
             mFPScreenOffCategory.setEnabled(!hasEnrolledFingerprints);
         }
     }
-
+    
     private boolean isFPGestureEnabled(){
         return Constants.isPreferenceEnabled(getActivity(), FP_HOME_KEY);
     }

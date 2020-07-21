@@ -18,10 +18,11 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Title and summary -->
     <string name="moto_actions_title">Moto Actions</string>
+    <string name="moto_actions_summary">Moto Gestures</string>
 
     <!-- Device gestures -->
-    <string name="device_gestures_title">Device gestures</string>
-    <string name="device_gestures_summary">Manage device gestures</string>
+    <string name="device_gestures_title">Actions by moto</string>
+    <string name="device_gestures_summary">Moto Gestures</string>
 
     <!-- Ambient display gestures -->
     <string name="ambient_display_manage_summary">Manage ambient display gestures</string>
@@ -47,6 +48,8 @@
     <string name="fingerprint_gestures_screenoff_summary">Use fingerprint gestures when screen off.\n\nFingerprint unlocking must be disabled to use this feature.</string>
     <string name="fingerprint_actions_screenoff">Actions with screen off</string>
 
+    <string name="sud">submenu</string>
+
     <!-- Actions -->
     <string name="action_none">None</string>
     <string name="action_home">Home</string>
@@ -68,7 +71,6 @@
     <string name="action_dialer">Open dialer</string>
     <string name="action_email">Open email app</string>
     <string name="action_messages">Open messages app</string>
-    <string name="action_pip">Picture-in-Picture mode</string>
 
     <!-- Screen off gestures -->
     <string name="screen_off_gestures_title">Screen off gestures</string>
@@ -89,70 +91,72 @@
    <!-- Screen off gestures haptic feedback -->
    <string name="haptic_feedback">Haptic feedback</string>
    <string name="haptic_feedback_summary">Vibrate when a touchscreen gesture is detected</string>
+
+    <!-- Dirac settings -->
+    <!-- Label for feature switch [CHAR LIMIT=30] -->
+    <string name="switch_bar_on">On</string>
+
+    <!-- Label for feature switch [CHAR LIMIT=30] -->
+    <string name="switch_bar_off">Off</string>
+
+    <!-- Spectrum Profiles -->
+    <string name="big_title">Set big cores frequency</string>
+    <string name="big_summary">Choose your Cpu velocity (OC)</string>
+    <string name="big_dialogTitle">Choose your "Big" cores velocity</string>
+
+    <!-- Spectrum Profiles -->
+    <string name="lit_title">Set little cores frequency</string>
+    <string name="lit_summary">Choose your Cpu velocity (OC)</string>
+    <string name="lit_dialogTitle">Choose your "Little" Cpu velocity</string>
+ 
+    <!-- Headers -->
+    <string name="displayheader">Display</string>
+    <string name="gesturesheader">Gestures</string>
+    <string name="extrasheader">Kernel Tweaks</string>
+
+    <!-- QS tile title -->
+    <string name="dirac_qs_tile_title">Dirac Sound</string>
+
+    <string name="part_title">moto actions sub menu</string>
+    <string name="part_summary">lab.seba3567</string>
+
+    <!-- Kcal -->
+    <string name="kcal_title">Display Calibration [KCAL]</string>
+    <string name="kcal_summary">Display color calibration</string>
+    <string name="kcal_enabled_title">Enable KCAL</string>
+    <string name="kcal_enabled_summary">Turn on display calibration</string>
+    <string name="kcal_red">Red</string>
+    <string name="kcal_green">Green</string>
+    <string name="kcal_blue">Blue</string>
+    <string name="kcal_saturation">Saturation</string>
+    <string name="kcal_contrast">Contrast</string>
+    <string name="menu_reset">Reset</string>
+    <string name="kcal_color_temp">Color temperature (K)</string>
+    <string name="kcal_hue">Hue</string>
+    <string name="kcal_value">Value</string>
+    <string name="kcal_greyscale_title">Greyscale</string>
+    <string name="kcal_greyscale_summary">Fully disable saturation</string>
+    <string name="presets_list_title">Load KCAL preset</string>
+    <string name="default_values">Default</string>
+    <string name="version_1">Version 1</string>
+    <string name="version_2">Version 2</string>
+    <string name="version_3">Version 3</string>
+    <string name="burning">Fix screen burn-in</string>
+    <string name="triluminous">Triluminous</string>
+    <string name="deep_black_and_white">Deep Black and White</string>
+    <string name="deep_natural">Deep Natural</string>
+    <string name="cool_amoled">Cool Amoled</string>
+    <string name="extreme_amoled">Extreme Amoled</string>
+    <string name="warm_amoled">Warm Amoled</string>
+    <string name="hybrid_mamba">Hybrid Mamba</string>
+
+    <!-- Omani Themes -->
+    <string name="theme_select_title">More options</string>
+    <string name="theme_select_summary">more feactures</string>
+    
+    <string name="audio_title">Audio</string>
+
+   <string name="equalizer">Sound</string>
    
-   <!-- Pip -->
-   <string name="app_does_not_support_pip">App does not support picture-in-picture mode.</string>
-
-   <!-- Proximity sensor -->
-   <string name="allow_proximity_sensor_title">Allow proximity sensor</string>
-   <string name="allow_proximity_sensor_summary">Check the proximity sensor before performing the action</string>
-
-   <!-- DeviceSettings Import -->
-   <string name="switch_bar_on">On</string>
-   <string name="switch_bar_off">Off</string>
-   
-   <!-- Device actions -->
-    <string name="actions_title">Actions</string>
-
-    <!-- Camera gesture -->
-    <string name="camera_gesture_title">Double-twist</string>
-    <string name="camera_gesture_summary">Open camera when using the double twist gesture</string>
-
-    <!-- Chop-chop gesture -->
-    <string name="chop_chop_gesture_title">Chop-chop</string>
-    <string name="chop_chop_gesture_summary">Toggle flashlight when using the chop-chop gesture</string>
-
-    <!-- Hand wave silencer gesture -->
-    <string name="hand_wave_silencer_title">Wave to silence</string>
-    <string name="hand_wave_silencer_summary">Silence incoming calls by waving your hand across the screen</string>
-
-    <!-- Flip to mute gesture -->
-    <string name="flip_to_mute_title">Flip for Do Not Disturb</string>
-    <string name="flip_to_mute_summary">Place the phone face down to silence notifications and calls</string>
-
-    <!-- Do Not Disturb access -->
-    <string name="dnd_access">Please, give Do Not Disturb access to CMActions in order to use this feature.</string>
-
-    <!-- Lift to silence gesture -->
-    <string name="lift_to_silence_title">Pick up to stop ringing</string>
-    <string name="lift_to_silence_summary">Lift the phone to silence incoming calls. It only works when your phone starts flat</string>
-
-    <!-- Hand wave gesture -->
-    <string name="hand_wave_gesture_title">Hand wave</string>
-    <string name="hand_wave_gesture_summary">Pulse notifications on hand wave</string>
-    <string name="hand_wave_gesture_flat_title">Detect orientation</string>
-    <string name="hand_wave_gesture_flat_summary">Pulse only if the phone is lying face up on a flat surface</string>
-
-    <!-- Pick-up gesture -->
-    <string name="pick_up_gesture_title">Pick-up</string>
-    <string name="pick_up_gesture_summary">Pulse notifications on pick-up</string>
-
-    <!-- Pocket gesture -->
-    <string name="pocket_gesture_title">Pocket</string>
-    <string name="pocket_gesture_summary">Pulse notifications on removal from pocket</string>
-
-    <!-- Proximity wake -->
-    <string name="proximity_wake_title">Proximity wake</string>
-    <string name="proximity_wake_enable_title">Proximity wake</string>
-    <string name="proximity_wake_enable_summary">Wake device on hand wave</string>
-
-    <!-- Ambient Display -->
-    <string name="ambient_display_title">Ambient display</string>
-    <string name="ambient_display_enable_title">Ambient display</string>
-    <string name="ambient_display_enable_summary">Wake screen when you receive notifications</string>
-    <string name="ambient_display_gestures_title">Ambient display gestures</string>
-    <string name="ambient_display_gestures_summary">Additional gestures to wake the screen</string>
-    <string name="ambient_display_summary">Wake screen when you receive notifications</string>
-    <string name="ambient_display_summary_on">Screen will wake when you receive notifications</string>
-    <string name="ambient_display_summary_off">Screen will not wake when you receive notifications</string>
+   <string name="set_on_boot">Set On Boot</string>
 </resources>
