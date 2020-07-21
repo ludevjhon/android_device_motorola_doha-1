@@ -1,6 +1,6 @@
 PRODUCT_MAKEFILES := \
     $(LOCAL_DIR)/device.mk \
-    $(LOCAL_DIR)/aosp_doha.mk
+    $(LOCAL_DIR)/lineage_doha.mk
 
 COMMON_LUNCH_CHOICES := \
     lineage_doha-user \
