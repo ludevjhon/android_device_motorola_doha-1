@@ -104,7 +104,7 @@ PRODUCT_CHARACTERISTICS := nosdcard
 
 # Camera
 PRODUCT_PACKAGES += \
-    Snap
+    
 
 # QMI
 PRODUCT_PACKAGES += \
