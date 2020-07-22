@@ -189,3 +189,7 @@ else
 endif
 
 # $(call inherit-product, build/make/target/product/gsi_keys.mk)
+
+# GCam Go
+PRODUCT_PACKAGES += \
+    GCam
