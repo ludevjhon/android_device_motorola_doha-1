@@ -1,5 +1,5 @@
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017 The LineageOS Project
+# Copyright (C) 2020 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -102,9 +102,9 @@ PRODUCT_AAPT_CONFIG := xxxhdpi
 PRODUCT_AAPT_PREF_CONFIG := xxxhdpi
 PRODUCT_CHARACTERISTICS := nosdcard
 
-# Camera
+# GCam Go
 PRODUCT_PACKAGES += \
-    
+    GCam
 
 # QMI
 PRODUCT_PACKAGES += \
@@ -187,9 +187,5 @@ else
   $(warning TODO: Need to replace legacy $(DEVICE_CONFIG_DIR)android_filesystem_config.h with config.fs)
   $(warning **********)
 endif
-
 # $(call inherit-product, build/make/target/product/gsi_keys.mk)
 
-# GCam Go
-PRODUCT_PACKAGES += \
-    GCam
